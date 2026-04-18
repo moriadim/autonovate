@@ -26,8 +26,8 @@ export function StatsCards({ totalRevenue, ordersToday, lowStockAlerts, loading 
   const stats: StatCard[] = [
     {
       title: 'Total Revenue',
-      value: (totalRevenue / 1000000).toFixed(2),
-      unit: 'M DZD',
+      value: totalRevenue.toLocaleString('en-US'),
+      unit: 'DZD',
       icon: <DollarSign className="w-6 h-6" />,
       trend: 'All time',
       trendUp: true,

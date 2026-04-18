@@ -45,10 +45,24 @@ export function useSheetyData() {
         'https://api.sheety.co/e57b6237c201e793e15b97104eeb261a/yesn8N/sales'
       )
       if (!response.ok) throw new Error('Failed to fetch sales')
-      const data: SheetyResponse<Order> = await response.json()
-      const ordersArray = data.sales || []
-      setOrders(ordersArray)
-      return ordersArray
+      const data: SheetyResponse<any> = await response.json()
+      const rawOrders = data.sales || []
+      
+      // Normalize data to snake_case as requested by user
+      const normalizedOrders: Order[] = rawOrders.map((item: any) => ({
+        id: item.id,
+        product_name: item.product_name || item.productName,
+        quantity: item.quantity,
+        unit_price: item.unit_price || item.unitPrice,
+        shipping_fee: item.shipping_fee || item.shippingFee,
+        total_price: item.total_price || item.totalPrice,
+        customer_phone: item.customer_phone || item.customerPhone,
+        city: item.city,
+        status: item.status,
+      }))
+      
+      setOrders(normalizedOrders)
+      return normalizedOrders
     } catch (err) {
       const errorMsg = err instanceof Error ? err.message : 'Failed to fetch sales'
       setError(errorMsg)
@@ -67,10 +81,18 @@ export function useSheetyData() {
         'https://api.sheety.co/e57b6237c201e793e15b97104eeb261a/yesn8N/products'
       )
       if (!response.ok) throw new Error('Failed to fetch products')
-      const data: SheetyResponse<Product> = await response.json()
-      const productsArray = data.products || []
-      setProducts(productsArray)
-      return productsArray
+      const data: SheetyResponse<any> = await response.json()
+      const rawProducts = data.products || []
+      
+      const normalizedProducts: Product[] = rawProducts.map((item: any) => ({
+        id: item.id,
+        product_name: item.product_name || item.productName,
+        stock: item.stock,
+        price: item.price || item.unitPrice,
+      }))
+      
+      setProducts(normalizedProducts)
+      return normalizedProducts
     } catch (err) {
       const errorMsg = err instanceof Error ? err.message : 'Failed to fetch products'
       setError(errorMsg)
@@ -89,10 +111,18 @@ export function useSheetyData() {
         'https://api.sheety.co/e57b6237c201e793e15b97104eeb261a/yesn8N/customers'
       )
       if (!response.ok) throw new Error('Failed to fetch customers')
-      const data: SheetyResponse<Customer> = await response.json()
-      const customersArray = data.customers || []
-      setCustomers(customersArray)
-      return customersArray
+      const data: SheetyResponse<any> = await response.json()
+      const rawCustomers = data.customers || []
+      
+      const normalizedCustomers: Customer[] = rawCustomers.map((item: any) => ({
+        id: item.id,
+        phone: item.phone || item.customerPhone,
+        name: item.name,
+        city: item.city,
+      }))
+      
+      setCustomers(normalizedCustomers)
+      return normalizedCustomers
     } catch (err) {
       const errorMsg = err instanceof Error ? err.message : 'Failed to fetch customers'
       setError(errorMsg)
@@ -111,28 +141,19 @@ export function useSheetyData() {
         fetch('https://api.sheety.co/e57b6237c201e793e15b97104eeb261a/yesn8N/sales'),
         fetch('https://api.sheety.co/e57b6237c201e793e15b97104eeb261a/yesn8N/products'),
         fetch('https://api.sheety.co/e57b6237c201e793e15b97104eeb261a/yesn8N/customers'),
-      ])
+      ]).catch(() => [
+          { ok: false }, { ok: false }, { ok: false }
+      ]) as any[]
 
-      if (!salesData.ok || !productsData.ok || !customersData.ok) {
-        throw new Error('Failed to fetch data')
-      }
-
-      const salesJson: SheetyResponse<Order> = await salesData.json()
-      const productsJson: SheetyResponse<Product> = await productsData.json()
-      const customersJson: SheetyResponse<Customer> = await customersData.json()
-
-      const ordersArray = salesJson.sales || []
-      const productsArray = productsJson.products || []
-      const customersArray = customersJson.customers || []
-
-      setOrders(ordersArray)
-      setProducts(productsArray)
-      setCustomers(customersArray)
+      // Re-fetch individually if Promise.all fails or just use the results
+      const salesResult = await fetchOrders()
+      const productsResult = await fetchProducts()
+      const customersResult = await fetchCustomers()
 
       return {
-        orders: ordersArray,
-        products: productsArray,
-        customers: customersArray
+        orders: salesResult,
+        products: productsResult,
+        customers: customersResult
       }
     } catch (err) {
       const errorMsg = err instanceof Error ? err.message : 'Failed to fetch data'
@@ -142,7 +163,7 @@ export function useSheetyData() {
     } finally {
       setLoading(false)
     }
-  }, [])
+  }, [fetchOrders, fetchProducts, fetchCustomers])
 
   const updateOrderStatus = useCallback(async (id: string, newStatus: string) => {
     setLoading(true)

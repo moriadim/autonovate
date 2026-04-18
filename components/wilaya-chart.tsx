@@ -105,7 +105,7 @@ export function WilayaChart({ orders = [], loading = false }: WilayaChartProps) 
         <div className="bg-muted rounded-lg p-4">
           <p className="text-xs text-muted-foreground mb-1">Total Revenue</p>
           <p className="text-2xl font-bold text-primary">
-            {(totalRevenue / 1000000).toFixed(2)}M DZD
+            {totalRevenue.toLocaleString('en-US')} DZD
           </p>
           <p className="text-xs text-muted-foreground mt-2">All wilayas combined</p>
         </div>
