@@ -38,9 +38,9 @@ export default function Dashboard() {
   }
 
   // Calculate stats from orders
-  const totalRevenue = orders.reduce((sum, order) => sum + (order.totalPrice || 0), 0)
+  const totalRevenue = orders.reduce((sum, order) => sum + (Number(order.total_price) || 0), 0)
   const ordersToday = orders.length
-  const lowStockProducts = products.filter(p => (p.stock || 0) < 3).length
+  const lowStockProducts = products.filter(p => (Number(p.stock) || 0) < 5).length
 
   return (
     <main className="min-h-screen bg-background">

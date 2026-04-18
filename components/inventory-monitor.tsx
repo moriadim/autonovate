@@ -9,8 +9,8 @@ interface InventoryMonitorProps {
 
 export function InventoryMonitor({ products = [], loading = false }: InventoryMonitorProps) {
   const getStockStatus = (stock: number): 'high' | 'medium' | 'low' => {
-    if (stock < 3) return 'low'
-    if (stock < 10) return 'medium'
+    if (stock < 5) return 'low'
+    if (stock < 15) return 'medium'
     return 'high'
   }
 
@@ -56,7 +56,7 @@ export function InventoryMonitor({ products = [], loading = false }: InventoryMo
   const stockPercentage = (current: number, max: number) => (current / max) * 100
 
   const displayProducts = products.slice(0, 8)
-  const lowStockProducts = products.filter(p => (p.stock || 0) < 3)
+  const lowStockProducts = products.filter(p => (Number(p.stock) || 0) < 5)
 
   if (loading) {
     return <LoadingSpinner />
@@ -73,7 +73,7 @@ export function InventoryMonitor({ products = [], loading = false }: InventoryMo
   return (
     <div className="bg-card border border-border rounded-lg p-6 space-y-4 max-h-[700px] overflow-y-auto">
       {displayProducts.map((product, index) => {
-        const stock = product.stock || 0
+        const stock = Number(product.stock) || 0
         const maxStock = 50 // Default maxStock as per requirements
         const status = getStockStatus(stock)
         const percentage = stockPercentage(stock, maxStock)
@@ -82,11 +82,11 @@ export function InventoryMonitor({ products = [], loading = false }: InventoryMo
           <div key={index} className="space-y-2 pb-4 border-b border-border last:border-b-0 last:pb-0">
             <div className="flex items-start justify-between gap-2">
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold text-foreground truncate">{product.productname || `Product ${index + 1}`}</p>
-                <p className="text-xs text-muted-foreground">Price: {(product.unitprice || 0).toLocaleString('en-US')} DZD</p>
+                <p className="text-sm font-semibold text-foreground truncate">{product.product_name || `Product ${index + 1}`}</p>
+                <p className="text-xs text-muted-foreground">Price: {(Number(product.price) || 0).toLocaleString('en-US')} DZD</p>
               </div>
               <div className="flex gap-1">
-                {stock < 3 && (
+                {stock < 5 && (
                   <AlertCircle className="w-4 h-4 text-destructive flex-shrink-0" />
                 )}
                 <span className={`text-xs font-semibold px-2 py-1 rounded-full whitespace-nowrap ${getStatusBg(status)}`}>
@@ -113,7 +113,7 @@ export function InventoryMonitor({ products = [], loading = false }: InventoryMo
               <p className="text-xs text-muted-foreground">{percentage.toFixed(0)}% Capacity</p>
             </div>
 
-            {stock < 3 && (
+            {stock < 5 && (
               <div className="mt-2 p-2 bg-red-50 dark:bg-red-900/20 rounded text-xs text-red-700 dark:text-red-400 flex gap-2">
                 <AlertCircle className="w-3 h-3 flex-shrink-0 mt-0.5" />
                 <span>Low Stock Badge: {stock} units remaining</span>

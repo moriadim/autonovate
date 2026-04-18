@@ -47,7 +47,7 @@ export function WilayaChart({ orders = [], loading = false }: WilayaChartProps) 
     if (!wilayaStats[city]) {
       wilayaStats[city] = { name: city, sales: 0, orders: 0 }
     }
-    wilayaStats[city].sales += order.totalPrice || 0
+    wilayaStats[city].sales += Number(order.total_price) || 0
     wilayaStats[city].orders += 1
   })
 

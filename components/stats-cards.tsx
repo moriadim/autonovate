@@ -45,7 +45,7 @@ export function StatsCards({ totalRevenue, ordersToday, lowStockAlerts, loading 
       title: 'Low Stock Alerts',
       value: lowStockAlerts,
       icon: <AlertTriangle className="w-6 h-6" />,
-      trend: 'Items below 3 units',
+      trend: 'Items below 5 units',
       trendUp: lowStockAlerts === 0,
       bgColor: 'bg-amber-50 dark:bg-amber-950/30',
     },

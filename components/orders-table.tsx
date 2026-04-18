@@ -39,7 +39,7 @@ export function OrdersTable({ orders = [], loading = false, onUpdateStatus }: Or
     }
   }
 
-  const displayOrders = orders.slice(0, 10) // Show latest 10 orders
+  const displayOrders = orders.slice(-5).reverse() // Show last 5 orders, newest first
 
   if (loading && orders.length === 0) {
     return <LoadingSpinner />
@@ -78,17 +78,17 @@ export function OrdersTable({ orders = [], loading = false, onUpdateStatus }: Or
                   className="hover:bg-muted/30 transition-colors group"
                 >
                   <td className="px-6 py-4 text-sm font-medium text-primary">
-                    {order.id || order.orderId || `ORD-${index + 1}`}
+                    {order.id ? `#${order.id}` : `ORD-${index + 1}`}
                   </td>
                   <td className="px-6 py-4 text-sm text-foreground">
-                    {order.phone || '-'}
+                    {order.customer_phone || '-'}
                   </td>
                   <td className="px-6 py-4 text-sm text-foreground max-w-[150px] truncate">
-                    {order.product || '-'}
+                    {order.product_name || '-'}
                   </td>
                   <td className="px-6 py-4 text-sm text-foreground">{order.city || '-'}</td>
                   <td className="px-6 py-4 text-sm font-bold text-foreground">
-                    {(order.totalPrice || 0).toLocaleString('en-US')} DZD
+                    {(Number(order.total_price) || 0).toLocaleString('en-US')} DZD
                   </td>
                   <td className="px-6 py-4">
                     <button
