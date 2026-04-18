@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { ChevronRight, Loader2 } from 'lucide-react'
 import { Order } from '@/hooks/useSheetyData'
 import { LoadingSpinner } from './loading-spinner'
+import { getOrderPrice, formatCurrency } from '@/lib/utils'
 
 interface OrdersTableProps {
   orders: Order[]
@@ -88,7 +89,7 @@ export function OrdersTable({ orders = [], loading = false, onUpdateStatus }: Or
                   </td>
                   <td className="px-6 py-4 text-sm text-foreground">{order.city || '-'}</td>
                   <td className="px-6 py-4 text-sm font-bold text-foreground">
-                    {(Number(order.total_price) || 0).toLocaleString('en-US')} DZD
+                    {formatCurrency(getOrderPrice(order))}
                   </td>
                   <td className="px-6 py-4">
                     <button

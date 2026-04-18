@@ -7,6 +7,8 @@ export interface Order {
   unit_price?: number | string
   shipping_fee?: number | string
   total_price?: number | string
+  total_order_price?: number | string
+  subtotal?: number | string
   customer_phone?: string
   city?: string
   status?: string
@@ -56,6 +58,8 @@ export function useSheetyData() {
         unit_price: item.unit_price || item.unitPrice,
         shipping_fee: item.shipping_fee || item.shippingFee,
         total_price: item.total_price || item.totalPrice,
+        total_order_price: item.total_order_price || item.totalOrderPrice,
+        subtotal: item.subtotal,
         customer_phone: item.customer_phone || item.customerPhone,
         city: item.city,
         status: item.status,

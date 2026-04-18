@@ -13,6 +13,7 @@ import {
 } from 'recharts'
 import { Order } from '@/hooks/useSheetyData'
 import { LoadingSpinner } from './loading-spinner'
+import { getOrderPrice, formatCurrency } from '@/lib/utils'
 
 interface WilayaData {
   name: string
@@ -47,7 +48,7 @@ export function WilayaChart({ orders = [], loading = false }: WilayaChartProps) 
     if (!wilayaStats[city]) {
       wilayaStats[city] = { name: city, sales: 0, orders: 0 }
     }
-    wilayaStats[city].sales += Number(order.total_price) || 0
+    wilayaStats[city].sales += getOrderPrice(order)
     wilayaStats[city].orders += 1
   })
 
@@ -78,7 +79,7 @@ export function WilayaChart({ orders = [], loading = false }: WilayaChartProps) 
         <div className="bg-card border border-border rounded-lg p-3 shadow-lg">
           <p className="text-sm font-semibold text-foreground">{payload[0].payload.name}</p>
           <p className="text-sm text-primary">
-            Sales: {payload[0].value.toLocaleString('en-US')} DZD
+            Sales: {formatCurrency(payload[0].value)}
           </p>
           <p className="text-sm text-accent">Orders: {payload[0].payload.orders}</p>
         </div>
@@ -105,7 +106,7 @@ export function WilayaChart({ orders = [], loading = false }: WilayaChartProps) 
         <div className="bg-muted rounded-lg p-4">
           <p className="text-xs text-muted-foreground mb-1">Total Revenue</p>
           <p className="text-2xl font-bold text-primary">
-            {totalRevenue.toLocaleString('en-US')} DZD
+            {formatCurrency(totalRevenue)}
           </p>
           <p className="text-xs text-muted-foreground mt-2">All wilayas combined</p>
         </div>
@@ -123,7 +124,7 @@ export function WilayaChart({ orders = [], loading = false }: WilayaChartProps) 
         </div>
         <div className="bg-muted rounded-lg p-4">
           <p className="text-xs text-muted-foreground mb-1">Avg Order Value</p>
-          <p className="text-2xl font-bold text-accent">{avgOrderValue}</p>
+          <p className="text-2xl font-bold text-accent">{formatCurrency(avgOrderValue)}</p>
           <p className="text-xs text-muted-foreground mt-2">DZD per order</p>
         </div>
       </div>

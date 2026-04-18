@@ -1,5 +1,6 @@
 import { DollarSign, ShoppingCart, AlertTriangle, Users } from 'lucide-react'
 import { LoadingSpinner } from './loading-spinner'
+import { formatCurrency } from '@/lib/utils'
 
 interface StatsCardsProps {
   totalRevenue: number
@@ -26,8 +27,7 @@ export function StatsCards({ totalRevenue, ordersToday, lowStockAlerts, loading 
   const stats: StatCard[] = [
     {
       title: 'Total Revenue',
-      value: totalRevenue.toLocaleString('en-US'),
-      unit: 'DZD',
+      value: formatCurrency(totalRevenue),
       icon: <DollarSign className="w-6 h-6" />,
       trend: 'All time',
       trendUp: true,
@@ -51,8 +51,7 @@ export function StatsCards({ totalRevenue, ordersToday, lowStockAlerts, loading 
     },
     {
       title: 'Avg Order Value',
-      value: ordersToday > 0 ? (totalRevenue / ordersToday).toFixed(0) : 0,
-      unit: 'DZD',
+      value: ordersToday > 0 ? formatCurrency(totalRevenue / ordersToday) : formatCurrency(0),
       icon: <Users className="w-6 h-6" />,
       trend: 'Per order',
       trendUp: true,

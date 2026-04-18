@@ -7,6 +7,7 @@ import { InventoryMonitor } from '@/components/inventory-monitor'
 import { WilayaChart } from '@/components/wilaya-chart'
 import { Header } from '@/components/header'
 import { useSheetyData, Order, Product } from '@/hooks/useSheetyData'
+import { getOrderPrice } from '@/lib/utils'
 
 export default function Dashboard() {
   const [refreshTime, setRefreshTime] = useState<string>('')
@@ -38,7 +39,8 @@ export default function Dashboard() {
   }
 
   // Calculate stats from orders
-  const totalRevenue = orders.reduce((sum, order) => sum + (Number(order.total_price) || 0), 0)
+  const confirmedOrders = orders.filter(order => order.status?.toLowerCase() === 'confirmed')
+  const totalRevenue = confirmedOrders.reduce((sum, order) => sum + getOrderPrice(order), 0)
   const ordersToday = orders.length
   const lowStockProducts = products.filter(p => (Number(p.stock) || 0) < 5).length
 

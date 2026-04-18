@@ -1,6 +1,7 @@
 import { AlertCircle } from 'lucide-react'
 import { Product } from '@/hooks/useSheetyData'
 import { LoadingSpinner } from './loading-spinner'
+import { formatCurrency } from '@/lib/utils'
 
 interface InventoryMonitorProps {
   products: Product[]
@@ -83,7 +84,7 @@ export function InventoryMonitor({ products = [], loading = false }: InventoryMo
             <div className="flex items-start justify-between gap-2">
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-semibold text-foreground truncate">{product.product_name || `Product ${index + 1}`}</p>
-                <p className="text-xs text-muted-foreground">Price: {(Number(product.price) || 0).toLocaleString('en-US')} DZD</p>
+                <p className="text-xs text-muted-foreground">Price: {formatCurrency(product.price || 0)}</p>
               </div>
               <div className="flex gap-1">
                 {stock < 5 && (
